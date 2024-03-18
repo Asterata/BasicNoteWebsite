@@ -9,7 +9,7 @@ const loginRouter = require('./router/login');
 const loginCheckRouter = require('./router/checklogin');
 const signinRouter = require('./router/signin');
 const logoutRouter = require('./router/logout');
-console.log('Environment Variables:', process.env);
+
 // Functions
 const getUsernameRouter = require('./router/getusername');
 
