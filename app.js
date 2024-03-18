@@ -3,12 +3,13 @@ const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const mysql = require('mysql2');
 
+require('dotenv').config();
 // routers
 const loginRouter = require('./router/login');
 const loginCheckRouter = require('./router/checklogin');
 const signinRouter = require('./router/signin');
 const logoutRouter = require('./router/logout');
-
+console.log('Environment Variables:', process.env);
 // Functions
 const getUsernameRouter = require('./router/getusername');
 
@@ -24,9 +25,9 @@ const db = require('./db/connection');
 
 
 const app = express();
-// get from .env
-const PORT = process.env.PORT || 3000;
-const HOSTNAME = process.env.HOSTNAME || '127.0.0.1';
+
+const PORT = process.env.PORT;
+const HOSTNAME = process.env.HOSTNAME;
 
 app.use(express.static('frontend'));
 app.use(express.json());
@@ -43,7 +44,7 @@ const sessionStore = new MySQLStore({
 
 // Session middleware setup
 app.use(session({
-  secret: 'JAqRJAR3B9BGzS6Rfqv9UUYi5MPVn7LuUkuy5Rr6hrSpmALqrbGvMjKRCLihn1Af18ZZumYi3UUwN17pB0br96G2TKz57t9dziHcig9GaQHJrJmpLNvM1jZtwUh73CKk', // cookie secret
+  secret: '', // cookie secret
   resave: false,
   saveUninitialized: true,
   store: sessionStore,
