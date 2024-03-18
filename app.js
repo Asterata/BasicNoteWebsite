@@ -42,7 +42,7 @@ const sessionStore = new MySQLStore({
 
 // Session middleware setup
 app.use(session({
-  secret: 'JAqRJAR3B9BGzS6Rfqv9UUYi5MPVn7LuUkuy5Rr6hrSpmALqrbGvMjKRCLihn1Af18ZZumYi3UUwN17pB0br96G2TKz57t9dziHcig9GaQHJrJmpLNvM1jZtwUh73CKk', // cookie secret
+  secret: '', // cookie secret
   resave: false,
   saveUninitialized: true,
   store: sessionStore,
