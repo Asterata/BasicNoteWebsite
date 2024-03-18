@@ -1,12 +1,11 @@
 const mysql = require('mysql2');
 
-// Create MySQL connection
 // MySQL connection options
 const dbOptions = {
-  host: '',
-  user: '',
-  password: '',
-  database: '',
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD || 'password',
+  database: process.env.DB_NAME || 'notesdb',
 };
   
 const connection = mysql.createConnection(dbOptions);
