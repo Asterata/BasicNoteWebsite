@@ -24,8 +24,9 @@ const db = require('./db/connection');
 
 
 const app = express();
-const PORT = 3000;
-const HOSTNAME = '127.0.0.1';
+// get from .env
+const PORT = process.env.PORT || 3000;
+const HOSTNAME = process.env.HOSTNAME || '127.0.0.1';
 
 app.use(express.static('frontend'));
 app.use(express.json());
@@ -42,7 +43,7 @@ const sessionStore = new MySQLStore({
 
 // Session middleware setup
 app.use(session({
-  secret: '', // cookie secret
+  secret: 'JAqRJAR3B9BGzS6Rfqv9UUYi5MPVn7LuUkuy5Rr6hrSpmALqrbGvMjKRCLihn1Af18ZZumYi3UUwN17pB0br96G2TKz57t9dziHcig9GaQHJrJmpLNvM1jZtwUh73CKk', // cookie secret
   resave: false,
   saveUninitialized: true,
   store: sessionStore,
