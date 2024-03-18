@@ -1,0 +1,47 @@
+/* Styles for the notepad */
+.notepad {
+    width: 400px;
+    height: 500px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+  }
+  
+  /* Styles for the header */
+  .notepad-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  /* Styles for the textarea */
+  .notepad textarea {
+    width: 100%;
+    height: 400px;
+    resize: none;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  /* Styles for the buttons */
+  .notepad button {
+    padding: 8px 15px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .notepad button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Styles for the footer */
+  .notepad-footer {
+    padding-top: 10px;
+    text-align: right;
+  }

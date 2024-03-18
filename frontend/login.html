@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Digital Trend Contact</title>
+    <!--
+      DIGITAL TREND
+      
+      https://templatemo.com/tm-538-digital-trend
+      
+      -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="css/templatemo-digital-trend.css">
+  </head>
+  <body>
+    <!-- MENU BAR -->
+    <nav class="navbar navbar-expand-lg position-absolute">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+        <i class="fa fa-line-chart"></i>
+        Digital Trend
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+          aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a href="index.html#about" class="nav-link">What are we?</a>
+            </li>
+            <li class="nav-item">
+              <a href="index.html#project" class="nav-link">Our Works</a>
+            </li>
+            <li class="nav-item">
+              <a href="blog.html" class="nav-link">Blog</a>
+            </li>
+            <li class="nav-item">
+              <a href="login.html" class="nav-link active contact">Dashboard</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- CONTACT -->
+    <section class="contact section-padding">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 mx-auto col-md-7 col-12 py-5 mt-5 text-center" data-aos="fade-up">
+            <h1 class="mb-4">Log in to your account or <strong>create</strong> a new account.</h1>
+          </div>
+          <div class="col-lg-8 mx-auto col-md-10 col-12">
+            <!-- Follow https://templatemo.com/contact page to setup your own contact form -->
+            <form method="post" class="contact-form" data-aos="fade-up" data-aos-delay="300" role="form">
+              <div class="row">
+                <div class="col-lg-5 mx-auto col-7">
+                  <input type="email" class="form-control" name="email" placeholder="E-Mail" id ="email">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-5 mx-auto col-7">
+                  <input type="password" class="form-control" name="password" placeholder="Password" id ="password">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-5 mx-auto col-7">
+                  <button type="button" class="form-control" id="login-button" name="login">Log In</button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-5 mx-auto col-7">
+                  <button type="button" class="form-control" id="signin-button" name="signin"  >Sign In</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- SCRIPTS -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+      fetch('/checklogin')
+      .then(response => {
+          if (response.ok) {
+              // User is logged in, do nothing
+              window.location.href = '/mynotes.html';
+          }
+      })
+      .catch(error => {
+          console.error('Error checking login status:', error);
+      });
+
+
+      document.getElementById("login-button").addEventListener("click", function() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+      
+          // Perform API call here to validate credentials
+          // Example: Replace the URL with your actual API endpoint
+          fetch("/login", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                  email: email,
+                  password: password
+              })
+          })
+          .then(response => {
+              if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Logged In',
+                    text: 'Redirecting to your dashboard...',
+                    showConfirmButton: false,
+                  });
+
+                  setTimeout(() => {
+                    window.location.href = "/usercheckin";
+                  }, 2000);
+              } else {
+                response.json().then(data => {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Uh Oh!',
+                    text: data.message,
+                    showConfirmButton: true,
+                  });
+                });
+              }
+          })
+          .catch(error => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Server Error',
+              text: 'An error occurred while processing your request. Please try again later.',
+              showConfirmButton: false,
+            });
+          });
+      });
+      
+      document.getElementById("signin-button").addEventListener("click", function() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+      
+          // Perform API call here to validate credentials
+          // Example: Replace the URL with your actual API endpoint
+          fetch("/signin", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                  email: email,
+                  password: password
+              })
+          })
+          .then(response => {
+              if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Signed In',
+                    text: 'Redirecting to your dashboard...',
+                    showConfirmButton: false,
+                  });
+
+                  setTimeout(() => {
+                    window.location.href = "/usercheckin";
+                  }, 2000);
+              } else {
+                response.json().then(data => {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Uh Oh!',
+                    text: data.message,
+                    showConfirmButton: true,
+                  });
+                });
+              }
+          })
+          .catch(error => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Server Error',
+              text: 'An error occurred while processing your request. Please try again later.',
+              showConfirmButton: false,
+            });
+          });
+      });
+    </script>
+  </body>
+</html>

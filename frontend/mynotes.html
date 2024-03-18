@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Dashboard</title>
+    <!--
+      DIGITAL TREND
+      
+      https://templatemo.com/tm-538-digital-trend
+      
+      -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/aos.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/owl.theme.default.min.css">
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="css/templatemo-digital-trend.css">
+  </head>
+  <body>
+    <!-- MENU BAR -->
+    <nav class="navbar navbar-expand-lg position-absolute">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+        <i class="fa fa-line-chart"></i>
+        Digital Trend
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+          aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a href="#" class="nav-link">Your Notes</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">Share Notes</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">My Team</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link contact" id="accountName">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link contact" id="logout">Log Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Left section for notes -->
+    <div class="left-section">
+        <div class="section-header">
+            <h2>Your Notes</h2>
+            <div class="buttons">
+                <button id="add-note-button">+</button>
+                <button id="remove-note-button">-</button>
+            </div>
+        </div>
+        <ul id="notes-list">
+            <li class="note-item">Note 1</li>
+            <li class="note-item">Note 2</li>
+            <li class="note-item">Note 3</li>
+        </ul>
+    </div>
+
+
+    <!-- Modal for adding new note -->
+    <body>
+        <textarea class="resizable-input" id="noteText" placeholder="Type something..."></textarea>
+        <button id="saveButton">Save</button>
+    </body>
+    <!-- SCRIPTS -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/aos.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/custom.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+
+        let selectedNote = null;
+
+        
+        // Check if the user is logged in
+        fetch('/checklogin')
+        .then(response => {
+            if (!response.ok) {
+                // User is not logged in, redirect to login page
+                window.location.href = '/login.html';
+            }
+        })
+        .catch(error => {
+            console.error('Error checking login status:', error);
+        });
+    
+        // Get the user's name
+        fetch('/getusername')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('accountName').innerText = data.username;
+        })
+        .catch(error => {
+            console.error('Error getting user name:', error);
+        });
+    
+        // Fetch all notes
+        fetch('/getallnotes')
+        .then(response => response.json())
+        .then(data => {
+            const notesList = document.getElementById('notes-list');
+            notesList.innerHTML = '';
+            data.notes.forEach(note => {
+                const noteItem = document.createElement('li');
+                noteItem.className = 'note-item';
+                noteItem.innerText = note.NoteTitle;
+
+                // Add click event listener to each note item
+                noteItem.addEventListener('click', () => {
+                    // Fetch note content when clicked
+                    fetch('/getnote', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            noteId: note.NoteID // Assuming the note ID is available
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('noteText').value = data.note.NoteText;
+                        selectedNote = note;
+                    })
+                    .catch(error => {
+                        console.error('Error getting note content:', error);
+                    });
+                });
+                notesList.appendChild(noteItem);
+            });
+        })
+        .catch(error => {
+            console.error('Error getting notes:', error);
+        });
+    
+        // Log out
+        document.getElementById('logout').addEventListener('click', () => {
+            fetch('/logout')
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/login.html';
+                } else {
+                    console.error('Error logging out');
+                }
+            })
+            .catch(error => {
+                console.error('Error logging out:', error);
+            });
+        });
+    
+        // Add note
+        document.getElementById('add-note-button').addEventListener('click', () => {
+            const title = prompt('Enter your note title');
+            if (title) {
+                fetch('/addnote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: title
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Refresh notes list after adding a new note
+                    fetchAndDisplayNotes();
+                })
+                .catch(error => {
+                    console.error('Error adding note:', error);
+                });
+            }
+        });
+    
+        // Remove note
+        document.getElementById('remove-note-button').addEventListener('click', () => {
+            const title = prompt('Enter the title of the note you want to remove');
+            if (title) {
+                fetch('/deletenote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: title
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Refresh notes list after removing a note
+                    fetchAndDisplayNotes();
+                })
+                .catch(error => {
+                    console.error('Error removing note:', error);
+                });
+            }
+        });
+    
+        // Save button
+        document.getElementById('saveButton').addEventListener('click', () => {
+            const noteText = document.querySelector('.resizable-input').value;
+            if (selectedNote) {
+                fetch('/savenote', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        noteId: selectedNote.NoteID,
+                        noteText: noteText
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Refresh notes list after updating a note
+                    fetchAndDisplayNotes();
+                })
+                .catch(error => {
+                    console.error('Error updating note:', error);
+                });
+            }
+        });
+    
+        // Function to fetch and display notes
+        function fetchAndDisplayNotes() {
+            fetch('/getallnotes')
+            .then(response => response.json())
+            .then(data => {
+                const notesList = document.getElementById('notes-list');
+                notesList.innerHTML = '';
+                data.notes.forEach(note => {
+                    const noteItem = document.createElement('li');
+                    noteItem.className = 'note-item';
+                    noteItem.innerText = note.NoteTitle;
+                    // Add click event listener to each note item
+                    noteItem.addEventListener('click', () => {
+                        // Fetch note content when clicked
+                        fetch('/getnote', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                noteId: note.NoteID // Assuming the note ID is available
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            document.getElementById('noteText').value = data.note.NoteText;
+                            selectedNote = note;
+                        })
+                        .catch(error => {
+                            console.error('Error getting note content:', error);
+                        });
+                    });
+                    notesList.appendChild(noteItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error getting notes:', error);
+            });
+        }
+    </script>
+    
+  </body>
+</html>
